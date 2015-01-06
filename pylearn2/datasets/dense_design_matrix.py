@@ -1130,20 +1130,13 @@ class DenseDesignMatrixPyTables(DenseDesignMatrix):
 
     _default_seed = (17, 2, 946)
 
-    def __init__(self,
-                 X=None,
-                 topo_view=None,
-                 y=None,
-                 view_converter=None,
-                 axes=('b', 0, 1, 'c'),
-                 rng=_default_seed):
+    def __init__(self, X=None, topo_view=None, y=None, view_converter=None,
+                 axes=('b', 0, 1, 'c'), rng=_default_seed, X_labels=None,
+                 y_labels=None):
         super_self = super(DenseDesignMatrixPyTables, self)
-        super_self.__init__(X=X,
-                            topo_view=topo_view,
-                            y=y,
-                            view_converter=view_converter,
-                            axes=axes,
-                            rng=rng)
+        super_self.__init__(X=X, topo_view=topo_view, y=y,
+                            view_converter=view_converter, axes=axes,
+                            rng=rng, X_labels=X_labels, y_labels=y_labels)
         ensure_tables()
         if not hasattr(self, 'filters'):
             self.filters = tables.Filters(complib='blosc', complevel=5)
