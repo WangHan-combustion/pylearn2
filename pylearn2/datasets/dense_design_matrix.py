@@ -1113,19 +1113,62 @@ class DenseDesignMatrixPyTables(DenseDesignMatrix):
         length number examples. The remaining dimensions are xamples with
         topological significance, e.g. for images the remaining axes are rows,
         columns, and channels.
-    y : ndarray, 1-dimensional(?), optional
-        Labels or targets for each example. The semantics here are not quite
-        nailed down for this yet.
+    y : ndarray, optional
+
+        Targets for each example (e.g., class ids, values to be predicted
+        in a regression task).
+
+        Currently three formats are supported:
+
+        - None:
+            Pass `None` if there are no target values. In this case the
+            dataset may not be some tasks such as supervised learning
+            or evaluation of a supervised learning system, but it can
+            be used for some other tasks. For example, a supervised
+            learning system can make predictions on it, or an unsupervised
+            learning system can be trained on it.
+        - 1D ndarray of integers:
+            This format may be used when the targets are class labels.
+            In this format, the array should have one entry for each
+            example. Each entry should be an integer, in the range
+            [0, N) where N is the number of classes.
+            This is the format that the `SVM` class expects.
+        - 2D ndarray, data type optional:
+            This is the most common format and can be used for a variety
+            of problem types. Each row of the matrix becomes the target
+            for a different example. Specific models / costs can interpret
+            this target vector differently. For example, the `Linear`
+            output layer for the `MLP` class expects the target for each
+            example to be a vector of real-valued regression targets. (It
+            can be a vector of size one if you only have one regression
+            target). The `Softmax` output layer of the `MLP` class expects
+            the target to be a vector of N elements, where N is the number
+            of classes, and expects all but one of the elements to 0. One
+            element should have value 1., and the index of this element
+            identifies the target class.
     view_converter : object, optional
         An object for converting between design matrices and topological views.
         Currently DefaultViewConverter is the only type available but later we
         may want to add one that uses the retina encoding that the U of T group
         uses.
-    axes : WRITEME
-        WRITEME
+    axes: tuple, optional
+        The axes ordering of the provided topo_view. Must be some permutation
+        of ('b', 0, 1, 'c') where 'b' indicates the axis indexing examples,
+        0 and 1 indicate the row/cols dimensions and 'c' indicates the axis
+        indexing color channels.
     rng : object, optional
         A random number generator used for picking random indices into the
         design matrix when choosing minibatches.
+    X_labels : int, optional
+        If X contains labels then X_labels must be passed to indicate the
+        total number of possible labels e.g. the size of a the vocabulary
+        when X contains word indices. This will make the set use
+        IndexSpace.
+    y_labels : int, optional
+        If y contains labels then y_labels must be passed to indicate the
+        total number of possible labels e.g. 10 for the MNIST dataset
+        where the targets are numbers. This will make the set use
+        IndexSpace.
     """
 
     _default_seed = (17, 2, 946)
